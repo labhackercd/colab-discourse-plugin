@@ -5,7 +5,7 @@ Colab Discourse Plugin
 """
 from setuptools import setup, find_packages
 
-install_requires = ['colab']
+install_requires = ['colab', 'pydiscourse']
 
 tests_require = ['mock']
 

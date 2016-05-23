@@ -11,7 +11,7 @@ def login_user(sender, user, request, **kwargs):
     url = base_url + "/session/sso"
 
     response = requests.get(url, allow_redirects=False)
-    if response.status_code != 502:
+    if response.status_code == 302:
         location = response.headers.get("Location")
 
         regex = re.compile(r"sso=(.+)&sig=(.+)")
@@ -30,4 +30,5 @@ def login_user(sender, user, request, **kwargs):
 
 
 def logout_user(sender, user, request, **kwargs):
-    pass
+    request.COOKIES.delete('_forum_session')
+    request.COOKIES.delete('_t')
