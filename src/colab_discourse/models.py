@@ -1,6 +1,7 @@
 # Your models here.
 from django.db import models
 from django.conf import settings
+from colab.plugins import helpers
 
 
 class DiscourseCategory(models.Model):
@@ -38,6 +39,10 @@ class DiscourseTopic(models.Model):
     visible = models.BooleanField(default=True)
     closed = models.BooleanField(default=False)
 
+    def get_url(self):
+        prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
+        return '/{}t/{}/{}'.format(prefix, self.slug, self.id)
+
 
 class DiscoursePost(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -51,6 +56,11 @@ class DiscoursePost(models.Model):
     reply_count = models.IntegerField(default=0)
     quote_count = models.IntegerField(default=0)
     reads = models.IntegerField(default=0)
+
+    def get_url(self):
+        prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
+        return '/{}t/{}/{}#post_{}'.format(prefix, self.topic.slug,
+                                           self.topic_id, self.id)
 
 
 class DiscourseBadgeType(models.Model):
