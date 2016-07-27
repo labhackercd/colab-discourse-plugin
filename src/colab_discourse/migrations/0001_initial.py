@@ -7,8 +7,6 @@ from django.conf import settings
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'colab_discourse', '0001_initial'), (b'colab_discourse', '0002_auto_20160610_1734'), (b'colab_discourse', '0003_auto_20160610_2024'), (b'colab_discourse', '0004_auto_20160613_1416')]
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
@@ -46,9 +44,9 @@ class Migration(migrations.Migration):
                 ('color', models.CharField(max_length=50)),
                 ('text_color', models.CharField(max_length=50)),
                 ('slug', models.CharField(max_length=255)),
-                ('description', models.CharField(max_length=255)),
-                ('topic_count', models.IntegerField()),
-                ('post_count', models.IntegerField()),
+                ('description', models.CharField(max_length=255, null=True)),
+                ('topic_count', models.IntegerField(default=0)),
+                ('post_count', models.IntegerField(default=0)),
             ],
             options={
             },
@@ -62,9 +60,9 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField()),
                 ('updated_at', models.DateTimeField()),
                 ('cooked', models.TextField()),
-                ('reply_count', models.IntegerField()),
-                ('quote_count', models.IntegerField()),
-                ('reads', models.IntegerField()),
+                ('reply_count', models.IntegerField(default=0)),
+                ('quote_count', models.IntegerField(default=0)),
+                ('reads', models.IntegerField(default=0)),
                 ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -104,42 +102,6 @@ class Migration(migrations.Migration):
             model_name='discoursebadge',
             name='badge_type',
             field=models.ForeignKey(to='colab_discourse.DiscourseBadgeType'),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='discoursecategory',
-            name='description',
-            field=models.CharField(max_length=255, null=True),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='discoursecategory',
-            name='post_count',
-            field=models.IntegerField(default=0),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='discoursecategory',
-            name='topic_count',
-            field=models.IntegerField(default=0),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='discoursepost',
-            name='quote_count',
-            field=models.IntegerField(default=0),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='discoursepost',
-            name='reads',
-            field=models.IntegerField(default=0),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='discoursepost',
-            name='reply_count',
-            field=models.IntegerField(default=0),
             preserve_default=True,
         ),
     ]

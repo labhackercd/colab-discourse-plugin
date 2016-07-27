@@ -43,6 +43,10 @@ class DiscourseTopic(models.Model):
         prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
         return '/{}t/{}/{}'.format(prefix, self.slug, self.id)
 
+    def get_category_url(self):
+        prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
+        return '/{}c/{}'.format(prefix, self.category.slug)
+
 
 class DiscoursePost(models.Model):
     id = models.IntegerField(primary_key=True)
