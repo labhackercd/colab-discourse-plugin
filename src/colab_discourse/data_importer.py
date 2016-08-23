@@ -20,7 +20,11 @@ class ColabDiscoursePluginDataImporter(PluginDataImporter):
         )
 
     def fill_object_data(self, model_class, data):
-        obj = model_class()
+        try:
+            obj = model_class.objects.get(id=data['id'])
+        except model_class.DoesNotExist:
+            obj = model_class()
+
         for field in obj._meta.fields:
             try:
                 if field.name == 'badge_type':
