@@ -6,7 +6,9 @@ import re
 
 def login_user(sender, user, request, **kwargs):
     plugin_config = helpers.get_plugin_config('colab_discourse')
-    base_url = request.build_absolute_uri().replace(request.path, "/")
+    request_path_regex = "{}.*".format(request.path)
+    base_url = request.build_absolute_uri()
+    base_url = re.sub(request_path_regex, '/', base_url)
     base_url += helpers.get_plugin_prefix('colab_discourse', regex=False)
     url = base_url + "/session/sso"
 
