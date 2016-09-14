@@ -2,6 +2,7 @@ from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from colab.plugins import helpers
+from colab.accounts.models import User
 from pydiscourse.sso import sso_validate, sso_redirect_url
 import requests
 import re
