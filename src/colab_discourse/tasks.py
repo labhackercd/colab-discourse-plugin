@@ -1,15 +1,16 @@
+from django.contrib.sites.models import Site
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from colab.plugins import helpers
 from pydiscourse.sso import sso_validate, sso_redirect_url
 import requests
 import re
 
-
-def login_user(sender, user, request, **kwargs):
+def perform_discourse_login(user):
     plugin_config = helpers.get_plugin_config('colab_discourse')
-    request_path_regex = "{}.*".format(request.path)
-    base_url = request.build_absolute_uri()
-    base_url = re.sub(request_path_regex, '/', base_url)
-    base_url += helpers.get_plugin_prefix('colab_discourse', regex=False)
+    prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
+    base_url = Site.objects.get_current().domain
+    base_url = "{}/{}".format(base_url, prefix)
     url = base_url + "/session/sso"
 
     response = requests.get(url, allow_redirects=False)
@@ -25,6 +26,12 @@ def login_user(sender, user, request, **kwargs):
         url = sso_redirect_url(nonce, secret, user.email,
                                user.id, user.username)
         response = requests.get(base_url + url, allow_redirects=False)
+        return response
+    return None
+
+def login_user(sender, user, request, **kwargs):
+    response = perform_discourse_login(user)
+    if response:
         session = response.cookies.get('_forum_session')
         t_cookie = response.cookies.get('_t')
         request.COOKIES.set("_forum_session", session)
@@ -34,3 +41,9 @@ def login_user(sender, user, request, **kwargs):
 def logout_user(sender, user, request, **kwargs):
     request.COOKIES.delete('_forum_session')
     request.COOKIES.delete('_t')
+
+
+@receiver(post_save, sender=User)
+def create_discourse_accounts(sender, instance, **kwargs):
+    if instance.is_active:
+        perform_discourse_login(instance)
