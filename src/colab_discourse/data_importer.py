@@ -107,9 +107,10 @@ class ColabDiscoursePluginDataImporter(PluginDataImporter):
     def fetch_categories(self):
         categories = self.client.categories()
         for category_data in categories:
-            category = self.fill_object_data(models.DiscourseCategory,
-                                             category_data)
-            category.save()
+            if category_data['slug'] != 'uncategorized':
+                category = self.fill_object_data(models.DiscourseCategory,
+                                                 category_data)
+                category.save()
 
     def fetch_badges(self):
         badges_data = self.client.badges()
