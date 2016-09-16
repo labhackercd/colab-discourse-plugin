@@ -63,9 +63,13 @@ class ColabDiscoursePluginDataImporter(PluginDataImporter):
 
     def fetch_topics(self):
         topics_data = self.get_all_topics()
+        all_topics = []
         for topic_data in topics_data:
             topic = self.fill_object_data(models.DiscourseTopic, topic_data)
             topic = self.complete_topic_informations(topic)
+            all_topics.append(topic.id)
+
+        models.DiscourseTopic.objects.all().exclude(id__in=all_topics).delete()
 
     def complete_topic_informations(self, topic):
         topic_data = self.client.topic(topic.slug, topic.id)
@@ -88,9 +92,13 @@ class ColabDiscoursePluginDataImporter(PluginDataImporter):
     def fetch_posts_by_topic(self, topic):
         topic_info = self.client.posts(topic.id)
         posts_data = topic_info['post_stream']['posts']
+        all_posts = []
         for post_data in posts_data:
             post = self.fill_object_data(models.DiscoursePost, post_data)
             post.save()
+            all_posts.append(post.id)
+
+        models.DiscoursePost.objects.all().exclude(id__in=all_posts).delete()
 
     def get_all_topics(self, page=0):
         topics = self.client.latest_topics(page=page)
@@ -106,21 +114,35 @@ class ColabDiscoursePluginDataImporter(PluginDataImporter):
 
     def fetch_categories(self):
         categories = self.client.categories()
+        all_categories = []
         for category_data in categories:
             if category_data['slug'] != 'uncategorized':
                 category = self.fill_object_data(models.DiscourseCategory,
                                                  category_data)
                 category.save()
+                all_categories.append(category.id)
+
+        models.DiscourseCategory.objects.all().exclude(
+            id__in=all_categories).delete()
 
     def fetch_badges(self):
         badges_data = self.client.badges()
         self.fetch_badge_types(badges_data['badge_types'])
+        all_badges = []
         for data in badges_data['badges']:
             badge = self.fill_object_data(models.DiscourseBadge, data)
             badge.save()
+            all_badges.append(badge.id)
+
+        models.DiscourseBadge.objects.all().exclude(id__in=all_badges).delete()
 
     def fetch_badge_types(self, data):
+        all_badge_types = []
         for badge_type_data in data:
             badge_type = self.fill_object_data(models.DiscourseBadgeType,
                                                badge_type_data)
             badge_type.save()
+            all_badge_types.append(badge_type.id)
+
+        models.DiscourseBadgeType.objects.all().exclude(
+            id__in=all_badge_types).delete()
