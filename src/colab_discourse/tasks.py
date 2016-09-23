@@ -10,8 +10,8 @@ import re
 def perform_discourse_login(user):
     plugin_config = helpers.get_plugin_config('colab_discourse')
     prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
-    base_url = Site.objects.get_current().domain
-    base_url = "{}/{}".format(base_url, prefix)
+    domain = Site.objects.get_current().domain
+    base_url = "%s/%s" % (domain, prefix)
     url = base_url + "/session/sso"
 
     response = requests.get(url, allow_redirects=False)
@@ -24,8 +24,13 @@ def perform_discourse_login(user):
         secret = plugin_config.get('sso_secret')
 
         nonce = sso_validate(payload, signature, secret)
-        url = sso_redirect_url(nonce, secret, user.email,
-                               user.id, user.username)
+        if user.profile.avatar:
+            url = sso_redirect_url(nonce, secret, user.email,
+                                   user.id, user.username,
+                                   avatar_url=domain + user.profile.get_avatar_140x140(),
+                                   avatar_force_update=True)
+        else:
+            url = sso_redirect_url(nonce, secret, user.email, user.id, user.username)
         response = requests.get(base_url + url, allow_redirects=False)
         return response
     return None
