@@ -24,13 +24,7 @@ def perform_discourse_login(user):
         secret = plugin_config.get('sso_secret')
 
         nonce = sso_validate(payload, signature, secret)
-        if user.profile.avatar:
-            url = sso_redirect_url(nonce, secret, user.email,
-                                   user.id, user.username,
-                                   avatar_url=domain + user.profile.get_avatar_140x140(),
-                                   avatar_force_update=True)
-        else:
-            url = sso_redirect_url(nonce, secret, user.email, user.id, user.username)
+        url = sso_redirect_url(nonce, secret, user.email, user.id, user.username)
         response = requests.get(base_url + url, allow_redirects=False)
         return response
     return None
