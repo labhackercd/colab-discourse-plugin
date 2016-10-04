@@ -10,8 +10,8 @@ import re
 def perform_discourse_login(user):
     plugin_config = helpers.get_plugin_config('colab_discourse')
     prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
-    domain = Site.objects.get_current().domain
-    base_url = "%s/%s" % (domain, prefix)
+    base_url = Site.objects.get_current().domain
+    base_url = "{}/{}".format(base_url, prefix)
     url = base_url + "/session/sso"
 
     response = requests.get(url, allow_redirects=False)
