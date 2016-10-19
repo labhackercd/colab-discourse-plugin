@@ -44,6 +44,6 @@ def logout_user(sender, user, request, **kwargs):
 
 
 @receiver(post_save, sender=User)
-def create_discourse_accounts(sender, instance, **kwargs):
-    if instance.is_active:
+def create_discourse_accounts(sender, instance, created, **kwargs):
+    if instance.is_active and created:
         perform_discourse_login(instance)
