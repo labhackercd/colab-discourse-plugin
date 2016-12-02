@@ -11,7 +11,7 @@ class DiscourseCategory(models.Model):
     color = models.CharField(max_length=50)
     text_color = models.CharField(max_length=50)
     slug = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, null=True)
+    description = models.TextField(null=True)
 
     topic_count = models.IntegerField(default=0)
     post_count = models.IntegerField(default=0)
