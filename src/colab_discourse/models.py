@@ -16,6 +16,9 @@ class DiscourseCategory(models.Model):
     topic_count = models.IntegerField(default=0)
     post_count = models.IntegerField(default=0)
 
+    class Meta:
+        ordering = ['name']
+
 
 class DiscourseTopic(models.Model):
 
