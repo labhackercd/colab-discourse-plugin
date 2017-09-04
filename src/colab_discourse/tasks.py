@@ -7,6 +7,7 @@ from pydiscourse.sso import sso_validate, sso_redirect_url
 import requests
 import re
 
+
 def perform_discourse_login(user):
     plugin_config = helpers.get_plugin_config('colab_discourse')
     prefix = helpers.get_plugin_prefix('colab_discourse', regex=False)
@@ -24,10 +25,12 @@ def perform_discourse_login(user):
         secret = plugin_config.get('sso_secret')
 
         nonce = sso_validate(payload, signature, secret)
-        url = sso_redirect_url(nonce, secret, user.email, user.id, user.username)
+        url = sso_redirect_url(nonce, secret, user.email, user.id,
+                               user.username, name=user.first_name)
         response = requests.get(base_url + url, allow_redirects=False)
         return response
     return None
+
 
 def login_user(sender, user, request, **kwargs):
     response = perform_discourse_login(user)
