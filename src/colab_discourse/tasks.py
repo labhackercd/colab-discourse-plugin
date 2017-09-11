@@ -25,8 +25,9 @@ def perform_discourse_login(user):
         secret = plugin_config.get('sso_secret')
 
         nonce = sso_validate(payload, signature, secret)
-        url = sso_redirect_url(nonce, secret, user.email, user.id,
-                               user.username, name=user.first_name)
+        url = sso_redirect_url(nonce, secret, user.email,
+                               user.id, user.username,
+                               name=user.first_name.encode('utf-8'))
         response = requests.get(base_url + url, allow_redirects=False)
         return response
     return None
