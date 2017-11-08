@@ -11,3 +11,9 @@ urls = {
     'prefix': '^expressao/',
     'login': '/expressao/accounts/login/',
 }
+
+settings_variables = {
+    'COLAB_STATICS': [
+        '/colab-plugins/discourse/src/colab_discourse/static'
+    ]
+}
