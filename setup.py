@@ -12,7 +12,7 @@ tests_require = ['mock']
 
 setup(
     name="colab-discourse",
-    version='0.1.1',
+    version='0.2.0',
     author='labhackercd',
     author_email='labhackercd@gmail.com',
     url='https://github.com/labhackercd/colab-discourse-plugin',
